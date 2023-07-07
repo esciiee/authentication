@@ -4,7 +4,8 @@ const bodyParser = require('body-parser');
 const ejs = require("ejs");
 const mongoose = require('mongoose');
 const encrypt = require("mongoose-encryption");
-const md5 = require("md5");
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 mongoose.connect('mongodb://127.0.0.1:27017/userDB');
 
@@ -34,29 +35,33 @@ app.get('/login', function(req, res) {
 });
 
 app.post('/register', function(req, res){
-    const userEmail = req.body.username;
-    const userPassword = md5(req.body.password);
-    const newUser = new User({
-        email: userEmail,
-        password: userPassword
+    bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+        if (err){
+            res.send(err);
+        }else{
+        const userEmail = req.body.username;
+        const userPassword = hash;
+        const newUser = new User({
+            email: userEmail,
+            password: userPassword
     });
     newUser.save();
     res.render("secrets");
+        }
+    });
 });
 
 app.post('/login', function(req, res){
     const userEmail = req.body.username;
-    const userPassword = md5(req.body.password);
+    const userPassword = req.body.password;
     User.findOne({ email: userEmail}).then(function(foundUser){
-        if (foundUser){
-            if (foundUser.password === userPassword){
-                res.render("secrets")
+        bcrypt.compare(userPassword, foundUser.userPassword, function(err, result) {
+            if(result){
+                res.render("secrets");
             }else{
-                res.send("wrong password, Tap here to change password");
+                res.send("wrong password, tap here to change password");
             }
-        }else{
-            res.send("User does not exits, Tap here to register");
-        }
+        });
     });
 });
 
