@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/authentication/static/css/main.19b2bb09.css",
+    "main.js": "/authentication/static/js/main.5cabbcbd.js",
+    "index.html": "/authentication/index.html",
+    "main.19b2bb09.css.map": "/authentication/static/css/main.19b2bb09.css.map",
+    "main.5cabbcbd.js.map": "/authentication/static/js/main.5cabbcbd.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.19b2bb09.css",
+    "static/js/main.5cabbcbd.js"
+  ]
+}
